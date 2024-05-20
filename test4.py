@@ -1,4 +1,5 @@
 
+# これはテストコード test4.py です。
 complex_data = {
     'integer': 42,
     'float': 3.14159,
@@ -24,8 +25,8 @@ complex_data = {
 
 
 from pprint import pprint
-from flatjson import flatten
+from flatten_pnv import flatten_pnv
 
 if __name__ == "__main__":
-    pprint(flatten(complex_data))
+    pprint(flatten_pnv(complex_data))
 

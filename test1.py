@@ -1,3 +1,3 @@
-from flatjson import flatten
-print(flatten("simple string"))
-print(flatten(None))
+from flatten_pnv import flatten_pnv
+print(flatten_pnv("simple string"))
+print(flatten_pnv(None))

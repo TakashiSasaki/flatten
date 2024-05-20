@@ -4,5 +4,5 @@ simple_dict = {
     'key3': 1.234
 }
 from pprint import pprint
-from flatjson import flatten
-pprint(flatten(simple_dict))
+from flatten_pnv import flatten_pnv
+pprint(flatten_pnv(simple_dict))

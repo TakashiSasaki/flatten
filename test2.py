@@ -1,4 +1,4 @@
 from pprint import pprint
-from flatjson import flatten
+from flatten_pnv import flatten_pnv
 simple_list = [1,True,None,"hello"]
-pprint(flatten(simple_list))
+pprint(flatten_pnv(simple_list))
