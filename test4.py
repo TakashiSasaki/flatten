@@ -14,7 +14,9 @@ complex_data = {
     'special_chars': {
         'key_with_space': 'value',
         'key-with-dash': 'another value',
-        '@special!#$%^&*()': 'special value'
+        '@special!#$%^&*()': 'special value',
+        "emptydict" : {},
+        "emptylist" : []
     },
     'none_value': None,
     'boolean': True

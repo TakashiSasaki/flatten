@@ -28,9 +28,11 @@ def flatten_pnv(value, path=(), result=None):
     if isinstance(value, (str, float, int, type(None), bool)):
         result.append((path[:-1], path[-1] if path else None, value))
     elif isinstance(value, (list, tuple)):
+        result.append((path[:-1], path[-1] if path else None, []))
         for index, item in enumerate(value):
             flatten_pnv(item, path + (index,), result)
     elif isinstance(value, dict):
+        result.append((path[:-1], path[-1] if path else None, {}))
         for key, val in value.items():
             flatten_pnv(val, path + (key,), result)
     else:
