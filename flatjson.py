@@ -1,4 +1,4 @@
-def flatten(value, path=(), result=None):
+def flatten_pnv(value, path=(), result=None):
     """
     辞書、リスト、タプル、および単純なデータ型（文字列、浮動小数点数、整数、None、ブール値）からなる
     入れ子になったデータ構造を、元の構造内の値へのパスを表すタプル、リーフの名前（またはリスト/タプルのインデックス）、
@@ -36,40 +36,3 @@ def flatten(value, path=(), result=None):
     else:
         raise TypeError(f"Unsupported data type: {type(value)}")
     return result
-
-complex_data = {
-    'integer': 42,
-    'float': 3.14159,
-    'string': "Hello, world!",
-    'dict': {
-        'nested_integer': 100,
-        'nested_list': [1, 2, 3, ['sublist', {'subdict': 'value'}]],
-        'empty_dict': {},
-    },
-    'list': [0, [1, 2], ('tuple', {'nested_dict_in_tuple': {'nested_key': 'nested_value'}})],
-    'empty_list': [],
-    'special_chars': {
-        'key_with_space': 'value',
-        'key-with-dash': 'another value',
-        '@special!#$%^&*()': 'special value'
-    },
-    'none_value': None,
-    'boolean': True
-}
-
-simple_dict = {
-    'key1': None,
-    'key2': True,
-    'key3': 1.234
-}
-
-simple_list = [1,True,None,"hello"]
-
-
-from pprint import pprint
-if __name__ == "__main__":
-    pprint(flatten(complex_data))
-    print(flatten("simple string"))
-    print(flatten(None))
-    pprint(flatten(simple_dict))
-    pprint(flatten(simple_list))
