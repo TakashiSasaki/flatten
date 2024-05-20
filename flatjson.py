@@ -1,38 +1,42 @@
 def flatten(value, path='', result=None):
     """
-    Flattens a nested data structure consisting of dictionaries, lists, tuples, and simple data types
-    (strings, floats, integers, None, and booleans) into a list of key-value pairs where keys represent
-    the path to the value in the original structure.
+    辞書、リスト、タプル、および単純なデータ型（文字列、浮動小数点数、整数、None、ブール値）からなる
+    入れ子になったデータ構造を、元の構造内の値へのパスを表すキー、リーフの名前（またはリスト/タプルのインデックス）、
+    および値の3要素のタプルのリストにフラット化します。
 
-    The paths use slashes (/) to separate dictionary keys and hashes (#) to indicate indices within lists or tuples.
+    パスはスラッシュ（/）を使用して辞書のキーを区切り、リストやタプルのインデックスはそのまま整数として格納されます。
 
-    Parameters:
-    value: The nested data structure to flatten. It can be a dict, list, tuple, or a simple data type.
-    path (str, optional): The current path in the recursive traversal. Defaults to an empty string.
-    result (list, optional): The accumulator for the key-value pairs. Defaults to None, where a new list is created.
+    パラメータ:
+    value: フラット化する入れ子になったデータ構造。dict、list、tuple、または単純なデータ型が可能。
+    path (str, オプション): 再帰的なトラバーサル中の現在のパス。デフォルトは空の文字列。
+    result (list, オプション): キー、リーフの名前（またはインデックス）、および値のペアのアキュムレータ。デフォルトはNoneで、新しいリストが作成されます。
 
-    Returns:
-    list: A list of tuples where each tuple contains a path and the corresponding value from the original data structure.
+    戻り値:
+    list: 各タプルが元のデータ構造からのパス、リーフの名前（またはインデックス）、および対応する値を含む3要素のタプルのリスト。
 
-    Raises:
-    TypeError: If the data type of an element is not supported.
+    例外:
+    TypeError: 要素のデータ型がサポートされていない場合に発生。
 
-    Examples:
+    例:
     >>> flatten({"a": 1, "b": {"c": 2, "d": [3, 4]}})
-    [('a', 1), ('b/c', 2), ('b/d#0', 3), ('b/d#1', 4)]
+    [('', 'a', 1), ('b', 'c', 2), ('b', 'd', 3), ('b', 'd', 4)]
     >>> flatten([1, [2, 3], {"a": 4}])
-    [('#0', 1), ('#1#0', 2), ('#1#1', 3), ('#2/a', 4)]
+    [('', 0, 1), ('0', 0, 1), ('0', 1, 2), ('1', 'a', 4)]
     """
     if result is None:
         result = []
     if isinstance(value, (str, float, int, type(None), bool)):
-        result.append((path, value))
+        leaf_name = path.split('/')[-1] if '/' in path else path
+        result.append((path, leaf_name, value))
     elif isinstance(value, (list, tuple)):
         for index, item in enumerate(value):
-            flatten(item, f'{path}#{index}' if path else f'#{index}', result)
+            flatten(item, path, result)
+            leaf_name = index
+            result.append((path, leaf_name, item))
     elif isinstance(value, dict):
         for key, val in value.items():
-            flatten(val, f'{path}/{key}' if path else key, result)
+            new_path = f'{path}/{key}' if path else key
+            flatten(val, new_path, result)
     else:
         raise TypeError(f"Unsupported data type: {type(value)}")
     return result
@@ -56,7 +60,6 @@ complex_data = {
     'none_value': None,
     'boolean': True
 }
-
 
 if __name__ == "__main__":
     print(flatten(complex_data))
