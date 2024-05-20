@@ -29,10 +29,10 @@ def flatten_pnv(value, path=(), result=None):
         result.append((path[:-1], path[-1] if path else None, value))
     elif isinstance(value, (list, tuple)):
         for index, item in enumerate(value):
-            flatten(item, path + (index,), result)
+            flatten_pnv(item, path + (index,), result)
     elif isinstance(value, dict):
         for key, val in value.items():
-            flatten(val, path + (key,), result)
+            flatten_pnv(val, path + (key,), result)
     else:
         raise TypeError(f"Unsupported data type: {type(value)}")
     return result
