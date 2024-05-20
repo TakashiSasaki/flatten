@@ -1,14 +1,14 @@
-def flatten(value, path='', result=None):
+def flatten(value, path=(), result=None):
     """
     辞書、リスト、タプル、および単純なデータ型（文字列、浮動小数点数、整数、None、ブール値）からなる
-    入れ子になったデータ構造を、元の構造内の値へのパスを表すキー、リーフの名前（またはリスト/タプルのインデックス）、
+    入れ子になったデータ構造を、元の構造内の値へのパスを表すタプル、リーフの名前（またはリスト/タプルのインデックス）、
     および値の3要素のタプルのリストにフラット化します。
 
-    パスはスラッシュ（/）を使用して辞書のキーを区切り、リストやタプルのインデックスはそのまま整数として格納されます。
+    パスはタプルとして保持され、リストやタプルのインデックスはそのまま整数として格納されます。
 
     パラメータ:
     value: フラット化する入れ子になったデータ構造。dict、list、tuple、または単純なデータ型が可能。
-    path (str, オプション): 再帰的なトラバーサル中の現在のパス。デフォルトは空の文字列。
+    path (tuple, オプション): 再帰的なトラバーサル中の現在のパス。デフォルトは空のタプル。
     result (list, オプション): キー、リーフの名前（またはインデックス）、および値のペアのアキュムレータ。デフォルトはNoneで、新しいリストが作成されます。
 
     戻り値:
@@ -19,24 +19,20 @@ def flatten(value, path='', result=None):
 
     例:
     >>> flatten({"a": 1, "b": {"c": 2, "d": [3, 4]}})
-    [('', 'a', 1), ('b', 'c', 2), ('b', 'd', 3), ('b', 'd', 4)]
+    [((), 'a', 1), (('b',), 'c', 2), (('b',), 'd', 3), (('b',), 'd', 4)]
     >>> flatten([1, [2, 3], {"a": 4}])
-    [('', 0, 1), ('0', 0, 1), ('0', 1, 2), ('1', 'a', 4)]
+    [((), 0, 1), ((0,), 0, 2), ((0,), 1, 3), ((1,), 'a', 4)]
     """
     if result is None:
         result = []
     if isinstance(value, (str, float, int, type(None), bool)):
-        leaf_name = path.split('/')[-1] if '/' in path else path
-        result.append((path, leaf_name, value))
+        result.append((path[:-1], path[-1] if path else None, value))
     elif isinstance(value, (list, tuple)):
         for index, item in enumerate(value):
-            flatten(item, path, result)
-            leaf_name = index
-            result.append((path, leaf_name, item))
+            flatten(item, path + (index,), result)
     elif isinstance(value, dict):
         for key, val in value.items():
-            new_path = f'{path}/{key}' if path else key
-            flatten(val, new_path, result)
+            flatten(val, path + (key,), result)
     else:
         raise TypeError(f"Unsupported data type: {type(value)}")
     return result
@@ -61,7 +57,19 @@ complex_data = {
     'boolean': True
 }
 
+simple_dict = {
+    'key1': None,
+    'key2': True,
+    'key3': 1.234
+}
+
+simple_list = [1,True,None,"hello"]
+
+
+from pprint import pprint
 if __name__ == "__main__":
-    print(flatten(complex_data))
+    pprint(flatten(complex_data))
     print(flatten("simple string"))
     print(flatten(None))
+    pprint(flatten(simple_dict))
+    pprint(flatten(simple_list))
